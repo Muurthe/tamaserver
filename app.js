@@ -1,29 +1,36 @@
 import express from "express";
-
-const app = express();
+const app = express(); 
 app.use(express.json());
 
 let status = {
   foodLevel: 24,
   sleepLevel: 24,
-  playLevel: 24,
+  playLevel: 20,
   currentScene: "default",
-  creationTime: "2025-11-18T13:16:26.116Z",
-  isDead: true
+  creationTime: "2025-11-19T13:16:26.116Z",
+  isDead: false
 };
 
-// Geeft de status als pure JSON terug
+// GET endpoint — flipboard haalt status op
 app.get("/status", (req, res) => {
   res.json(status);
 });
 
-// Hiermee kun je later de status aanpassen, maar is nu niet nodig
-app.post("/status", (req, res) => {
-  status = { ...status, ...req.body };
-  res.json(status);
+// POST endpoint — Jira verandert status
+pp.post("/jira-webhook", (req, res) => {
+  const { newStatus } = req.body;
+
+  if (newStatus === "Active") {
+    status.currentScene = "playing";
+    console.log("playing");
+  }
+
+  if (newStatus === "Done") {
+    status.currentScene = "feeding";
+    console.log("eating");
+  }
+
+  res.json({ ok: true });
 });
 
-const PORT = 8080;
-app.listen(PORT, () => {
-  console.log(`Server draait op http://localhost:${PORT}`);
-});
+export default app;
