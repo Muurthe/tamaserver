@@ -1,36 +1,55 @@
 import express from "express";
-const app = express(); 
+
+const app = express();
 app.use(express.json());
 
 let status = {
   foodLevel: 24,
   sleepLevel: 24,
-  playLevel: 20,
+  playLevel: 24,
   currentScene: "default",
-  creationTime: "2025-11-19T13:16:26.116Z",
+  creationTime: new Date().toISOString(),
   isDead: false
 };
 
-// GET endpoint — flipboard haalt status op
+// ------- STATUS API -------
 app.get("/status", (req, res) => {
   res.json(status);
 });
 
-// POST endpoint — Jira verandert status
-pp.post("/jira-webhook", (req, res) => {
-  const { newStatus } = req.body;
+// ------- JIRA WEBHOOK -------
+app.post("/webhook", (req, res) => {
+  const secret = req.headers["x-secret"];
 
-  if (newStatus === "Active") {
-    status.currentScene = "playing";
-    console.log("playing");
+  // 1. check secret
+  if (secret !== "mijnSuperGeheimeWoord") {
+    return res.status(403).json({ error: "Forbidden" });
   }
 
-  if (newStatus === "Done") {
-    status.currentScene = "feeding";
-    console.log("eating");
+  // 2. body uitlezen
+  const action = req.body.action;
+
+  if (!action) {
+    return res.status(400).send("No action inside body");
   }
 
+  // 3. Aanpassen van status op basis van rule
+  switch (action) {
+    case "toActive":
+      status.currentScene = "playing";
+      break;
+
+    case "toDone":
+      status.currentScene = "eating";
+      break;
+
+    default:
+      return res.status(400).send("Unknown action");
+  }
+
+  console.log("Updated status:", status);
   res.json({ ok: true });
 });
 
+// Run for local testing
 export default app;
