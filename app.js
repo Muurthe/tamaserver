@@ -9,16 +9,12 @@ const SHARED_SECRET = "mijnSuperGeheimeWoord";
 
 // Dit is de status die je Pi / flipboard straks ophaalt
 let status = {
-  foodLevel: 24,
-  sleepLevel: 44,
-  playLevel: 24,
-  currentScene: "Hello_from_New_code",
-  creationTime: new Date().toISOString(),
+  foodLevel: 40,
+  sleepLevel: 40,
+  playLevel: 40,
+  currentScene: "default",
   isDead: false,
   lastUpdated: new Date().toISOString(),
-  lastWebhookAction: null,
-  lastWebhookAt: null,
-  webhookHitCount: 0
 };
 
 console.log("test");
