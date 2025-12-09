@@ -85,7 +85,6 @@ app.get("/monitor", (req, res) => {
       <body>
         <h1>Tama Monitor (Live)</h1>
         <p><span class="label">Current scene:</span> <span id="scene">...</span></p>
-        <p><span class="label">Webhook hits:</span> <span id="hits">0</span></p>
         <p><span class="label">Last action:</span> <span id="action">-</span></p>
         <p><span class="label">Last updated:</span> <span id="updated">-</span></p>
 
@@ -95,7 +94,6 @@ app.get("/monitor", (req, res) => {
             const data = await res.json();
 
             document.getElementById("scene").textContent = data.currentScene;
-            document.getElementById("hits").textContent = data.webhookHitCount;
             document.getElementById("action").textContent = data.lastWebhookAction || "-";
 
             if (data.lastUpdated) {
