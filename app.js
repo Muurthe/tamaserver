@@ -54,7 +54,7 @@ app.post("/webhook/tama", (req, res) => {
   // Log in status zodat jij het via /status kunt zien
   status.webhookHitCount += 1;
   status.lastWebhookAction = action || null;
-  status.lastWebhookAt = new Date(lastUpdated).toLocaleString("nl-NL", { timeZone: "Europe/Amsterdam" });
+  status.lastWebhookAt = new Date().toISOString();
 
   if (!action) {
     return res.status(400).json({ error: "Missing 'action' in body" });
