@@ -12,7 +12,7 @@ let status = {
   foodLevel: 24,
   sleepLevel: 44,
   playLevel: 24,
-  currentScene: "default",
+  currentScene: "Hello_from_New_code",
   creationTime: new Date().toISOString(),
   isDead: false,
   lastUpdated: new Date().toISOString(),
@@ -21,56 +21,14 @@ let status = {
   webhookHitCount: 0
 };
 
+console.log("test");
+
+
 // Helper om waardes tussen 0–24 te houden
 function clamp(value, min = 0, max = 24) {
   return Math.max(min, Math.min(max, value));
 }
 
-// (optioneel) commando-logica, kun je later weer gebruiken
-function applyCommand(command) {
-  if (status.isDead && command !== "revive") {
-    return;
-  }
-
-  switch (command) {
-    case "feed":
-      status.foodLevel = clamp(status.foodLevel + 1);
-      status.currentScene = "eating"; // hier kun je ook "feeding" zetten als je wilt
-      break;
-
-    case "sleep":
-      status.sleepLevel = clamp(status.sleepLevel + 1);
-      status.currentScene = "sleeping";
-      break;
-
-    case "play":
-      status.playLevel = clamp(status.playLevel + 4);
-      status.currentScene = "playing";
-      break;
-
-    case "kill":
-      status.isDead = true;
-      status.currentScene = "dead";
-      break;
-
-    case "revive":
-      status = {
-        foodLevel: 24,
-        sleepLevel: 24,
-        playLevel: 24,
-        currentScene: "default",
-        creationTime: new Date().toISOString(),
-        isDead: false,
-        lastUpdated: new Date().toISOString()
-      };
-      return;
-
-    default:
-      return;
-  }
-
-  status.lastUpdated = new Date().toISOString();
-}
 
 // Kleine check-route om te zien of de server leeft
 app.get("/", (req, res) => {
@@ -132,3 +90,4 @@ export default app;
 // app.listen(8080, () => {
 //   console.log("Status server running on port 8080");
 // });
+ 
