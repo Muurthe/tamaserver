@@ -73,13 +73,47 @@ app.post("/webhook/tama", (req, res) => {
 });
 
 
-// ⬇️ KIES HIERAFHANKELIJK VAN WAAR JE DRAAIT:
+//monitor so the /status wil update
+app.get("/monitor", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="nl">
+      <head>
+        <meta charset="UTF-8" />
+        <title>Tama Monitor</title>
+        <style>
+          body { font-family: sans-serif; padding: 20px; font-size: 20px; }
+          .label { font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <h1>Tama Monitor (Live)</h1>
+        <p><span class="label">Current scene:</span> <span id="scene">...</span></p>
+        <p><span class="label">Webhook hits:</span> <span id="hits">0</span></p>
+        <p><span class="label">Last action:</span> <span id="action">-</span></p>
+        <p><span class="label">Last updated:</span> <span id="updated">-</span></p>
 
-// 1) OP VERCEL  👉 GEEN app.listen, WEL export default:
+        <script>
+          async function refreshStatus() {
+            const res = await fetch("/status");
+            const data = await res.json();
+
+            document.getElementById("scene").textContent = data.currentScene;
+            document.getElementById("hits").textContent = data.webhookHitCount;
+            document.getElementById("action").textContent = data.lastWebhookAction || "-";
+
+            if (data.lastUpdated) {
+              const time = new Date(data.lastUpdated).toLocaleString("nl-NL", { timeZone: "Europe/Amsterdam" });
+              document.getElementById("updated").textContent = time;
+            }
+          }
+
+          refreshStatus();                 // 1x meteen ophalen
+          setInterval(refreshStatus, 2000); // elke 2 seconden vernieuwen
+        </script>
+      </body>
+    </html>
+  `);
+});
+
 export default app;
-
-// 2) LOKAAL / RASPBERRY PI 👉 gebruik dit i.p.v. export default:
-// app.listen(8080, () => {
-//   console.log("Status server running on port 8080");
-// });
- 
