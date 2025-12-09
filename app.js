@@ -53,7 +53,6 @@ function applyCommand(command) {
         sleepLevel: 24,
         playLevel: 24,
         currentScene: "default",
-        currentPlayer: null,
         creationTime: new Date().toISOString(),
         isDead: false,
         lastUpdated: new Date().toISOString()
@@ -86,6 +85,9 @@ function mapActionToCommand(action) {
 
 // Generic webhook endpoint for Jira (and optionally Slack)
 app.post("/webhook/tama", (req, res) => {
+  console.log("=== Incoming Tama webhook ===");
+  console.log("Headers:", req.headers);
+  console.log("Body:", req.body);
   console.log("Incoming Tama webhook:", req.body);
 
   // Basic shared-secret check
