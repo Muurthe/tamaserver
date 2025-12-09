@@ -43,43 +43,35 @@ app.get("/status", (req, res) => {
 // 👉 Dit is de webhook waar Jira naartoe POST
 // URL in Jira: https://tamaserver.vercel.app/webhook/tama
 app.post("/webhook/tama", (req, res) => {
-  console.log("=== Incoming Tama webhook ===");
-  console.log("Headers:", req.headers);
-  console.log("Body:", req.body);
-
   // 1. Secret check
   const secret = req.header("X-Secret") || req.header("x-secret");
   if (secret !== SHARED_SECRET) {
-    console.log("❌ Invalid secret:", secret);
     return res.status(403).json({ error: "Invalid secret" });
   }
 
-  // 2. Haal action uit de body
   const { action } = req.body;
-  console.log("Received action:", action);
+
+  // Log in status zodat jij het via /status kunt zien
+  status.webhookHitCount += 1;
+  status.lastWebhookAction = action || null;
+  status.lastWebhookAt = new Date().toISOString();
 
   if (!action) {
     return res.status(400).json({ error: "Missing 'action' in body" });
   }
 
-  // 3. Koppel Jira actions direct aan scenes
-  // Eating rule in Jira stuurt: { "action": "toDone" }
   if (action === "toDone") {
-    // ← jouw eating rule
     status.currentScene = "eating";
   } else if (action === "toActive") {
-    // bv. weer terug naar default of spelen, kies zelf:
-    status.currentScene = "playing"; // of "default"
+    status.currentScene = "playing";
   } else {
-    console.log("❌ Onbekende action:", action);
     return res.status(400).json({ error: "Unknown action value" });
   }
 
   status.lastUpdated = new Date().toISOString();
-  console.log("✅ New status:", status);
-
   return res.status(200).json({ ok: true });
 });
+
 
 // ⬇️ KIES HIERAFHANKELIJK VAN WAAR JE DRAAIT:
 
